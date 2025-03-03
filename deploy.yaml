@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broker
+  namespace: smtrack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broker
+  template:
+    metadata:
+      labels:
+        app: broker
+    spec:
+      containers:
+      - name: broker
+        image: siamatic/broker:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 256Mi
+            cpu: 100m
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: device-config
+              key: PORT
+        - name: MQTT_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: mqtt-config
+              key: MQTT_HOST
+        - name: MQTT_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: mqtt-config
+              key: MQTT_PORT
+        - name: MQTT_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: mqtt-config
+              key: MQTT_USERNAME
+        - name: MQTT_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: mqtt-config
+              key: MQTT_PASSWORD
+        - name: RABBITMQ
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-config
+              key: RABBITMQ
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: device-config
+              key: NODE_ENV
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: broker
+  namespace: smtrack
+spec:
+  selector:
+    app: broker
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP
