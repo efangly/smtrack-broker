@@ -5,6 +5,7 @@ import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { MqttModule } from './mqtt/mqtt.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { HealthModule } from './health/health.module';
+import { ConsumerModule } from './consumer/consumer.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { HealthModule } from './health/health.module';
     WebsocketModule, 
     RabbitmqModule, 
     MqttModule, 
-    HealthModule
+    HealthModule, 
+    ConsumerModule
   ],
 })
 export class AppModule {}

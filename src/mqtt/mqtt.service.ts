@@ -14,6 +14,7 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
       port: Number(process.env.MQTT_PORT),
       username: process.env.MQTT_USERNAME,
       password: process.env.MQTT_PASSWORD,
+      clientId: 'broker_service'
     });
     this.client.on("connect", () => {
       this.client.subscribe("test", (err) => { if (err) this.client.end() });
