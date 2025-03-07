@@ -16,10 +16,21 @@ export class WebsocketGateway {
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
-  @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: any, @ConnectedSocket() client: Socket): string {
+  @SubscribeMessage('send_schedule')
+  async handleMessage(@MessageBody() data: any, @ConnectedSocket() client: Socket, callback: (response: any) => void) {
     this.logger.log(`Message from client: ${client.id}`, data);
-    return 'Message received';
+    switch (data) {
+      case "time":
+        // await setTime();
+        callback("OK");
+        console.log("Set Time schedule");
+        break;
+      case "backup":
+        // await backup();
+        console.log("Set Backup schedule");
+        callback("OK");
+        break;
+    }
   }
 
   @SubscribeMessage('send_message')
