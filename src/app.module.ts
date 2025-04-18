@@ -6,16 +6,18 @@ import { MqttModule } from './mqtt/mqtt.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { HealthModule } from './health/health.module';
 import { ConsumerModule } from './consumer/consumer.module';
+import { ApiModule } from './api/api.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(), 
     ScheduleModule.forRoot(),
+    MqttModule, 
     WebsocketModule, 
     RabbitmqModule, 
-    MqttModule, 
     HealthModule, 
-    ConsumerModule
+    ConsumerModule, 
+    ApiModule
   ],
 })
 export class AppModule {}

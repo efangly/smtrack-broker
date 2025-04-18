@@ -1,13 +1,12 @@
 import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
 import { connect } from 'mqtt';
-import { WebsocketGateway } from '../websocket/websocket.gateway';
 import type { MqttClient } from 'mqtt';
 
 @Injectable()
 export class MqttService implements OnModuleInit, OnModuleDestroy {
-  constructor(private readonly socket: WebsocketGateway) {}
+  constructor() {}
   private readonly logger = new Logger(MqttService.name);
-  client: MqttClient;
+  private client: MqttClient;
   onModuleInit() {
      this.client = connect({
       host: process.env.MQTT_HOST,
@@ -23,7 +22,7 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
       this.logger.log(error);
     });
     this.client.on("message", (topic, message) => {
-      this.socket.broadcastMessage("receive_message", message.toString());
+      this.logger.log(`Received message from ${topic}: ${message.toString()}`);
     });
   }
 
